@@ -9,7 +9,7 @@ import pytest
 #     # assert len(board_list.get("boards")) == 0
 
 @pytest.mark.skip
-def test_create_board(api_client: BoardApi):
+def test_create_board(api_client: BoardApi, test_data: dict):
     board_list_before = (api_client
                          .get_all_boards_by_org_id("693af6e768691aeb25aa9f32")
                          .get("boards"))
@@ -24,14 +24,15 @@ def test_create_board(api_client: BoardApi):
 
 
 @pytest.mark.skip
-def test_delete_board(api_client: BoardApi):
+def test_delete_board(api_client: BoardApi, test_data: dict):
+    org_id = test_data.get("org_id")
     board_list_before = (api_client
-                         .get_all_boards_by_org_id("693af6e768691aeb25aa9f32")
+                         .get_all_boards_by_org_id(org_id)
                          .get("boards"))
     resp = api_client.delete_board_by_id("id")
     print(resp)
     board_list_after = (api_client
-                        .get_all_boards_by_org_id("693af6e768691aeb25aa9f32")
+                        .get_all_boards_by_org_id(org_id)
                         .get("boards"))
     assert len(board_list_before) - len(board_list_after) == 1
 

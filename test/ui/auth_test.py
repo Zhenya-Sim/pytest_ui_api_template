@@ -5,10 +5,10 @@ import pytest
 
 
 @pytest.mark.skip
-def test_auth(browser):
-    email = "simonova.evd21597@gmail.com"
-    password = "Qw210597fox"
-    username = "Евгения"
+def test_auth(browser, test_data: dict):
+    email = test_data.get("email")
+    password = test_data.get("password")
+    username = test_data.get("username")
 
     auth_page = AuthPage(browser)
     auth_page.go()

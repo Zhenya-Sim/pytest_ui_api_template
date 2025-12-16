@@ -6,6 +6,7 @@ from webdriver_manager.firefox import GeckoDriverManager
 
 from api.BoardApi import BoardApi
 from configuration.ConfigProvider import ConfigProvider
+from testdata.DataProvider import DataProvider
 
 
 @pytest.fixture
@@ -19,7 +20,8 @@ def browser():
         if browser_name == 'chrome':
             browser = webdriver.Chrome()
         else:
-            browser = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()))
+            browser = webdriver.Firefox(
+                service=FirefoxService(GeckoDriverManager().install()))
 
         browser.implicitly_wait(timeout)
         browser.maximize_window()
@@ -31,8 +33,11 @@ def browser():
 
 @pytest.fixture
 def api_client() -> BoardApi:
-    url = ConfigProvider().get("api", "base_url")
-    return BoardApi(url, "token", "api_key")
+    DataProvider.get_token()
+    return BoardApi(
+        ConfigProvider().get("api", "base_url"),
+        DataProvider().get_token()
+    )
 
 
 # фикстура для неавторизованного пользователя
@@ -58,3 +63,8 @@ def delete_board():
 
     api = BoardApi("https://api.trello.com/1", "token", "api_key")
     api.delete_board_by_id(dictionary.get("board_id"))
+
+
+@pytest.fixture
+def test_data():
+    return DataProvider()
